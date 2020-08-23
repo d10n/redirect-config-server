@@ -11,8 +11,9 @@
     "pkg": "pkg --targets node14-linux-x64 --out-path out package.json"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "pkg": "^4.4.9"
+    "express": "^4.17.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "pkg": "^4.4.9"
+  }
 }
