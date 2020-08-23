@@ -1,0 +1,18 @@
+{
+  "name": "redirect-config-server",
+  "version": "0.1.0",
+  "main": "src/redirect-config-server.js",
+  "author": "d10n <david@bitinvert.com>",
+  "license": "MIT",
+  "bin": {
+    "redirect-config-server": "src/redirect-config-server.js"
+  },
+  "scripts": {
+    "pkg": "pkg --targets node14-linux-x64 --out-path out package.json"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "pkg": "^4.4.9"
+  },
+  "devDependencies": {}
+}
