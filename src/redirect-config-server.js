@@ -50,7 +50,20 @@ function updateRedirects() {
                 // /foo /bar
                 // /foo /bar 301
                 // /foo /bar 302
-                const code = item[2] ? parseInt(item[2], 10) : 301;
+                if (item.length > 3) {
+                    console.error('Incorrect line format. Ignoring line: ', item);
+                    return acc;
+                } else if (item.length < 2) {
+                    console.error('Incorrect line format. Ignoring line: ', item);
+                    return acc;
+                }
+                let code;
+                try {
+                    code = item[2] ? parseInt(item[2], 10) : 301;
+                } catch(e) {
+                    console.error('Unable to parse response code. Ignoring line: ', item);
+                    return acc;
+                }
                 const rule = [
                     code,
                     LOCAL_PREFIX_DIR + item[1],
