@@ -1,0 +1,46 @@
+example.com {
+	tls example@example.com
+	redir https://www.example.com{uri}
+}
+
+www.example.com {
+	tls example@example.com
+	encode gzip
+	root * /srv/http/com.example/public
+	header Strict-Transport-Security max-age=31536000
+	log {
+		output file /srv/http/com.example/log/caddy.access.jsonl.log
+	}
+
+	@hidden {
+		path */index.html
+		path /404.html
+	}
+	@existing_files {
+		file {path} {path}/index.html
+	}
+	@path_should_be_directory {
+		not path */
+		file {path}/index.html
+	}
+
+	# Hide index.html pages; require accessing a page as a directory.
+	handle @hidden {
+		rewrite * /404.html
+		# Caddy can't serve a file with a status code, but
+		# redirect-config-server sends 404.html with a 404 status code,
+		# so use reverse_proxy
+		reverse_proxy unix//run/redirect-config-server/redirect-config-server.sock
+	}
+
+	route { # Must be route instead of handle to preserve order
+		# First, try sending the file at the exact path, or send path/index.html.
+		file_server @existing_files
+		# Next, if path is a folder with index.html, but was not accessed with
+		# a trailing slash, redirect to path with a trailing slash.
+		redir @path_should_be_directory {uri}/ permanent
+		# Finally, no path existed, so pass the request to the redirect config server
+		reverse_proxy unix//run/redirect-config-server/redirect-config-server.sock
+	}
+}
+

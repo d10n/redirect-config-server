@@ -1,0 +1,36 @@
+[Unit]
+Description=Redirect Config Server
+After=network.target
+
+[Service]
+User=http
+Group=http
+Environment=LISTEN_SOCKET=/run/redirect-config-server/redirect-config-server.sock
+Environment=WEB_ROOT_PATH=/
+Environment=TRAILING_SLASH_OPTIONAL=true
+ExecStart=/usr/bin/node /srv/redirect-config-server/src/redirect-config-server.js
+WorkingDirectory=/srv/http/com.example/public
+
+RuntimeDirectory=redirect-config-server
+CapabilityBoundingSet=
+NoNewPrivileges=True
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectHostname=true
+ProtectClock=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+LockPersonality=true
+#MemoryDenyWriteExecute=true # Causes node.js to crash, but desired for rewrite
+RestrictRealtime=true
+RestrictSUIDSGID=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+
+[Install]
+WantedBy=multi-user.target
+
