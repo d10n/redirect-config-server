@@ -118,6 +118,17 @@ app.get('*', (req, res) => {
 updateRedirects();
 watchRedirects();
 
-app.listen(LISTEN_SOCKET, () => {
-    console.log('Listening on ' + LISTEN_SOCKET);
+function startListen() {
+    return app.listen(LISTEN_SOCKET, () => {
+        console.log('Listening on ' + LISTEN_SOCKET);
+    });
+}
+
+const server = startListen();
+
+process.on('SIGINT', () => {
+    server.close();
+    process.exit();
 });
+
+
