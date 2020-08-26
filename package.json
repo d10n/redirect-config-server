@@ -10,6 +10,9 @@
   "scripts": {
     "pkg": "pkg --targets node14-linux-x64 --out-path out package.json"
   },
+  "engines": {
+    "node": ">=14"
+  },
   "dependencies": {
     "express": "^4.17.1"
   },
