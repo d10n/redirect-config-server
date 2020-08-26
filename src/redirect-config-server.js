@@ -35,7 +35,13 @@ let fsWatcher;
 function updateRedirects() {
     fs.readFile(_redirects, 'utf8', (err, data) => {
         if (err) {
-            console.error('Unable to update redirects', err);
+            if (err.code === 'ENOENT') {
+                console.error(_redirects + ' does not exist; setting no redirects');
+                rules = {};
+            } else {
+                console.error('Unable to update redirects', err);
+            }
+            watchRedirects();
             return;
         }
         const dataLines = data
@@ -100,11 +106,26 @@ function handleFsWatchEvent(eventType, filename) {
     console.error('Unknown eventType', eventType, filename);
 }
 
+function handleFsWatchFileEvent(newStats, oldStats) {
+    if (newStats.isFile()) {
+        updateRedirects();
+        watchRedirects();
+    }
+}
+
 function watchRedirects() {
     if (fsWatcher) {
         fsWatcher.close();
     }
-    fsWatcher = fs.watch(_redirects, handleFsWatchEvent);
+    fs.unwatchFile(_redirects);
+    fs.access(_redirects, fs.constants.R_OK | fs.constants.F_OK, (err) => {
+        if (err) {
+            const TEN_SECONDS = 10 * 1000;
+            fs.watchFile(_redirects, {interval: TEN_SECONDS}, handleFsWatchFileEvent);
+            return;
+        }
+        fsWatcher = fs.watch(_redirects, handleFsWatchEvent);
+    })
 }
 
 
