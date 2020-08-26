@@ -95,7 +95,7 @@ function watchRedirects() {
 
 app.get('*', (req, res) => {
     const rule = rules[req.path];
-    if (!rule) {
+    if (!rule || req.path === LOCAL_PREFIX_DIR + '/404.html') {
         return res.status(404).sendFile(cwd + '/404.html');
     }
     // return res.status(rule[0]).location(rule[1]).send();
