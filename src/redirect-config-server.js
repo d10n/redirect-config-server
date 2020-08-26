@@ -1,17 +1,19 @@
 #!/usr/bin/node
 
 const LISTEN_SOCKET = process.env.LISTEN_SOCKET;
-const WEB_ROOT_PATH = process.env.WEB_ROOT_PATH;
 const TRAILING_SLASH_OPTIONAL = ['true', 't', 'yes', 'y'].includes((process.env.TRAILING_SLASH_OPTIONAL || 'false').toLowerCase());
 
 if (!LISTEN_SOCKET) {
     console.error('export LISTEN_SOCKET=/tmp/my_redirects.sock');
     process.exit(1);
 }
-if (!WEB_ROOT_PATH) {
-    console.error('export WEB_ROOT_PATH=/');
-    process.exit(1);
-}
+
+const WEB_ROOT_PATH = (function() {
+    if (!process.env.WEB_ROOT_PATH) {
+        return '/';
+    }
+    return process.env.WEB_ROOT_PATH;
+})();
 
 const LOCAL_WEB_ROOT_PATH = WEB_ROOT_PATH.replace(/\/$/, '');
 
