@@ -1,19 +1,19 @@
 #!/usr/bin/node
 
 const LISTEN_SOCKET = process.env.LISTEN_SOCKET;
-const PREFIX_DIR = process.env.PREFIX_DIR;
+const WEB_ROOT_PATH = process.env.WEB_ROOT_PATH;
 const TRAILING_SLASH_OPTIONAL = ['true', 't', 'yes', 'y'].includes((process.env.TRAILING_SLASH_OPTIONAL || 'false').toLowerCase());
 
 if (!LISTEN_SOCKET) {
     console.error('export LISTEN_SOCKET=/tmp/my_redirects.sock');
     process.exit(1);
 }
-if (!PREFIX_DIR) {
-    console.error('export PREFIX_DIR=/');
+if (!WEB_ROOT_PATH) {
+    console.error('export WEB_ROOT_PATH=/');
     process.exit(1);
 }
 
-const LOCAL_PREFIX_DIR = PREFIX_DIR.replace(/\/$/, '');
+const LOCAL_WEB_ROOT_PATH = WEB_ROOT_PATH.replace(/\/$/, '');
 
 
 
@@ -66,12 +66,12 @@ function updateRedirects() {
                 }
                 const rule = [
                     code,
-                    LOCAL_PREFIX_DIR + item[1],
+                    LOCAL_WEB_ROOT_PATH + item[1],
                 ];
-                acc[LOCAL_PREFIX_DIR + item[0]] = rule;
+                acc[LOCAL_WEB_ROOT_PATH + item[0]] = rule;
                 const ruleHasNoTrailingSlash = item[0].charAt(item[0].length - 1) !== '/';
                 if (TRAILING_SLASH_OPTIONAL && ruleHasNoTrailingSlash) {
-                    acc[LOCAL_PREFIX_DIR + item[0] + '/'] = rule;
+                    acc[LOCAL_WEB_ROOT_PATH + item[0] + '/'] = rule;
                 }
                 return acc;
             }, {});
@@ -108,7 +108,7 @@ function watchRedirects() {
 
 app.get('*', (req, res) => {
     const rule = rules[req.path];
-    if (!rule || req.path === LOCAL_PREFIX_DIR + '/404.html') {
+    if (!rule || req.path === LOCAL_WEB_ROOT_PATH + '/404.html') {
         return res.status(404).sendFile(cwd + '/404.html');
     }
     // return res.status(rule[0]).location(rule[1]).send();

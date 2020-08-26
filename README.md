@@ -9,9 +9,9 @@ export LISTEN_SOCKET=/tmp/redirects.sock
 # or:
 export LISTEN_SOCKET=8001
 
-export PREFIX_DIR=/
+export WEB_ROOT_PATH=/
 # or:
-export PREFIX_DIR=/next/
+export WEB_ROOT_PATH=/next/
 
 export TRAILING_SLASH_OPTIONAL=true
 # or:
@@ -39,7 +39,7 @@ Behavior:
 Configuration:
 
 * `LISTEN_SOCKET`: listen socket
-* `PREFIX_DIR`: the directory in the web root that this redirect server works on
+* `WEB_ROOT_PATH`: the directory in the web root that this redirect server works on
 * `TRAILING_SLASH_OPTIONAL`: if a redirect source does not end with a `/`, then also redirect the source with a trailing `/`
 
 
