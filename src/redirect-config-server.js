@@ -8,13 +8,7 @@ if (!LISTEN_SOCKET) {
     process.exit(1);
 }
 
-const WEB_ROOT_PATH = (function() {
-    if (!process.env.WEB_ROOT_PATH) {
-        return '/';
-    }
-    return process.env.WEB_ROOT_PATH;
-})();
-
+const WEB_ROOT_PATH = process.env.WEB_ROOT_PATH || '/';
 const LOCAL_WEB_ROOT_PATH = WEB_ROOT_PATH.replace(/\/$/, '');
 
 
